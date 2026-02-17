@@ -44,12 +44,7 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 z-50">
-            <motion.div
-              whileHover={{ rotate: 10, scale: 1.1 }}
-              className="text-3xl sm:text-4xl cursor-pointer"
-            >
-              ॐ
-            </motion.div>
+            
             <h1 className={`hidden sm:block text-lg sm:text-xl font-bold transition-colors duration-300 ${isScrolled ? 'text-gray-900' : 'text-white'}`}>
               Aikyam
             </h1>

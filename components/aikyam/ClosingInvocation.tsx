@@ -77,17 +77,7 @@ export default function ClosingInvocation() {
 
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         {/* Om symbol */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1 }}
-          className="mb-12"
-        >
-          <div className="text-9xl text-purple-700 filter drop-shadow-xl">
-            ॐ
-          </div>
-        </motion.div>
+        
 
         {/* Invocation text */}
         <motion.div

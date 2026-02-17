@@ -27,7 +27,7 @@ export default function Careers() {
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-800 mb-4 sm:mb-6">
-            Come Build the Digital Mandir of Bharat
+            Join us to build from Bharat for the world
           </h2>
           <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto mb-6 sm:mb-8" />
         </motion.div>

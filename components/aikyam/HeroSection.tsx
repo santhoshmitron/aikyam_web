@@ -61,16 +61,7 @@ export default function HeroSection() {
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-12 lg:py-16 text-center flex flex-col items-center justify-center min-h-screen w-full">
         {/* Sacred symbol */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1 }}
-          className="mb-4 sm:mb-6 md:mb-8"
-        >
-          <div className="inline-block text-6xl sm:text-7xl md:text-8xl text-yellow-400 filter drop-shadow-lg">
-            ॐ
-          </div>
-        </motion.div>
+        
 
         {/* Main headline */}
         <motion.h1
