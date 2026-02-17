@@ -33,7 +33,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ slug: stri
   const emailBody = encodeURIComponent(
     `Dear Aikyam Hiring Team,\\n\\nI am writing to express my interest in the ${category.title} positions at Aikyam.\\n\\n[Your message here]\\n\\nBest regards,\\n[Your name]`
   );
-  const mailtoLink = `mailto:info@shriaikyam.com?subject=${emailSubject}&body=${emailBody}`;
+  const mailtoLink = `mailto:career@shriaikyam.com?subject=${emailSubject}&body=${emailBody}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-purple-100">
