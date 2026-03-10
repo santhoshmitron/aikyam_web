@@ -91,7 +91,7 @@ export default function HeroSection() {
           className="max-w-4xl mx-auto mb-6 sm:mb-8 md:mb-10 lg:mb-12"
         >
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-purple-200 leading-relaxed font-light">
-            Aikyam is a stealth mode faith-techstartup. We see immense opportunity and rapid evolution in this
+            Aikyam is a stealth mode faith-tech startup. We see immense opportunity and rapid evolution in this
             emerging space.
           </p>
 
