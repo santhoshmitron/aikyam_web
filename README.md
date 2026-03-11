@@ -1,7 +1,7 @@
 # Aikyam - Sacred Digital Harmony
 
 A modern, responsive website for Aikyam - India's Priest-Led Spiritual Ecosystem.
-
+Hi
 ## Overview
 
 Aikyam unites temples, priests, and devotees through authentic, priest-led digital darshans and poojas. This website showcases the platform's features, temple directory, priest profiles, and spiritual services.
