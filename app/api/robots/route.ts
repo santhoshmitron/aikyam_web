@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const baseUrl = 'https://aikyam.in';
+  const baseUrl = 'https://www.shriaikyam.com';
 
   const robots = `User-agent: *
 Allow: /

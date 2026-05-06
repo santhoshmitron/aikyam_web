@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Header() {
@@ -17,15 +17,6 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const navItems = [
-    { label: 'Live Darshan', href: '/live-darshan' },
-    { label: 'Daily Blessings', href: '/daily-blessings' },
-    { label: 'Temples', href: '/temples' },
-    { label: 'Priests', href: '/priests' },
-    { label: 'About', href: '/about' },
-    { label: 'Contact', href: '/contact' },
-  ];
 
   return (
     <>
@@ -50,30 +41,10 @@ export default function Header() {
             </h1>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
-            {navItems.map((item) => (
-              <motion.div key={item.label} whileHover={{ y: -2 }}>
-                <a
-                  href={item.href}
-                  className={`text-sm font-medium transition-colors duration-300 hover:text-purple-600 ${
-                    isScrolled ? 'text-gray-700 hover:text-purple-600' : 'text-white hover:text-yellow-400'
-                  }`}
-                >
-                  {item.label}
-                </a>
-              </motion.div>
-            ))}
-          </nav>
-
-          {/* CTA Button Desktop */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="hidden lg:block px-6 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-yellow-400 to-amber-500 text-purple-900 hover:shadow-lg transition-all duration-300"
-          >
-            Download App
-          </motion.button>
+          {/* Desktop state */}
+          <div className="hidden lg:block text-sm font-medium text-purple-100/90">
+            Home
+          </div>
 
           {/* Mobile Menu Button */}
           <motion.button
@@ -116,31 +87,14 @@ export default function Header() {
           transition={{ duration: 0.3 }}
         >
           <nav className="flex flex-col gap-3 px-6 pb-6">
-            {navItems.map((item, index) => (
-              <motion.a
-                key={item.label}
-                href={item.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-white hover:text-yellow-400 py-3 px-4 rounded-lg hover:bg-white/10 transition-colors font-medium"
-                initial={{ opacity: 0, x: -20 }}
-                animate={
-                  isMobileMenuOpen
-                    ? { opacity: 1, x: 0 }
-                    : { opacity: 0, x: -20 }
-                }
-                transition={{ delay: index * 0.05 }}
-              >
-                {item.label}
-              </motion.a>
-            ))}
-
-            {/* Mobile CTA Button */}
-            <motion.button
-              className="w-full px-4 py-3 rounded-lg bg-gradient-to-r from-yellow-400 to-amber-500 text-purple-900 font-medium hover:shadow-lg transition-all mt-4"
-              whileTap={{ scale: 0.95 }}
+            <motion.div
+              className="text-white/90 py-3 px-4 rounded-lg bg-white/10 font-medium"
+              initial={{ opacity: 0, x: -20 }}
+              animate={isMobileMenuOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+              transition={{ delay: 0.05 }}
             >
-              Download App
-            </motion.button>
+              Home
+            </motion.div>
           </nav>
         </motion.div>
       </motion.div>

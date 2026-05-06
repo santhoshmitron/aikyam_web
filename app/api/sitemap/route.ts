@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const baseUrl = 'https://aikyam.in';
+  const baseUrl = 'https://www.shriaikyam.com';
 
   const pages = [
     {
@@ -9,30 +9,6 @@ export async function GET() {
       lastmod: new Date().toISOString().split('T')[0],
       changefreq: 'weekly',
       priority: '1.0',
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastmod: new Date().toISOString().split('T')[0],
-      changefreq: 'monthly',
-      priority: '0.8',
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastmod: new Date().toISOString().split('T')[0],
-      changefreq: 'monthly',
-      priority: '0.7',
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastmod: new Date().toISOString().split('T')[0],
-      changefreq: 'yearly',
-      priority: '0.5',
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastmod: new Date().toISOString().split('T')[0],
-      changefreq: 'yearly',
-      priority: '0.5',
     },
   ];
 

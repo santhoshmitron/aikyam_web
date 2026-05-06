@@ -2,14 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Instagram,
-  Twitter,
-  Linkedin,
-} from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -90,26 +83,7 @@ export default function Footer() {
           className="flex flex-col md:flex-row justify-between items-center gap-4 text-purple-300 text-sm"
         >
           <p>© 2026 Aikyam. All rights reserved.</p>
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-            <a href="/legal#privacy" className="hover:text-white transition-colors">
-              Privacy Policy
-            </a>
-            <a href="/legal#terms" className="hover:text-white transition-colors">
-              Terms of Service
-            </a>
-            <a href="/legal#refund" className="hover:text-white transition-colors">
-              Refund Policy
-            </a>
-            <a href="/community" className="hover:text-white transition-colors">
-              Community Guidelines
-            </a>
-            <a href="/community#delete" className="hover:text-white transition-colors">
-              Delete Account
-            </a>
-            <a href="/contact" className="hover:text-white transition-colors">
-              Contact Us
-            </a>
-          </div>
+          <p className="text-center">Only home and temple profile pages are currently active.</p>
         </motion.div>
 
         {/* Final blessing */}

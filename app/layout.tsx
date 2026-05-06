@@ -1,11 +1,23 @@
 import React from "react"
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+/** Self-hosted via fontsource (build works without Google Fonts network fetch). */
+const inter = localFont({
+  src: '../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
+  variable: '--font-body',
+  display: 'swap',
+  weight: '100 900',
+})
+
+const sora = localFont({
+  src: '../node_modules/@fontsource-variable/sora/files/sora-latin-wght-normal.woff2',
+  variable: '--font-sora',
+  display: 'swap',
+  weight: '100 800',
+})
 
 export const metadata: Metadata = {
   title: 'Aikyam',
@@ -67,8 +79,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`font-sans antialiased`}>
+    <html lang="en" className={`scroll-smooth ${inter.variable} ${sora.variable}`}>
+      <body className="font-sans antialiased">
         {children}
         <Analytics />
       </body>
