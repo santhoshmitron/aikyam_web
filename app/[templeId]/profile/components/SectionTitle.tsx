@@ -18,29 +18,29 @@ export function SectionTitle({ icon: Icon, title, subtitle, tone = "default" }: 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.45 }}
-      className="mb-4"
+      className="mb-4 lg:mb-[1.125rem]"
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 lg:gap-3.5">
         {Icon ? (
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-300/90 to-amber-500 text-purple-950 shadow-[0_0_24px_rgba(251,191,36,0.35)]">
-            <Icon className="h-5 w-5" aria-hidden />
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-300/90 to-amber-500 text-purple-950 shadow-[0_0_24px_rgba(251,191,36,0.35)] lg:h-11 lg:w-11 lg:rounded-2xl">
+            <Icon className="h-5 w-5 lg:h-[1.375rem] lg:w-[1.375rem]" aria-hidden />
           </span>
         ) : null}
         <div className="min-w-0">
           <h2
-            className={`font-display text-xl font-semibold tracking-tight md:text-2xl ${isDark ? "text-white" : "text-purple-950"}`}
+            className={`font-display text-xl font-semibold tracking-tight md:text-2xl lg:text-[1.45rem] xl:text-[1.52rem] ${isDark ? "text-white" : "text-purple-950"}`}
           >
             {title}
           </h2>
           {subtitle ? (
-            <p className={`mt-0.5 text-sm ${isDark ? "text-white/75" : "text-purple-800/70"}`}>
+            <p className={`mt-0.5 text-sm lg:text-[0.94rem] ${isDark ? "text-white/75" : "text-purple-800/70"}`}>
               {subtitle}
             </p>
           ) : null}
         </div>
       </div>
       <div
-        className="mt-3 h-px w-full max-w-xs bg-gradient-to-r from-transparent via-amber-400/80 to-transparent"
+        className="mt-3 h-px w-full max-w-xs bg-gradient-to-r from-transparent via-amber-400/80 to-transparent lg:mt-3.5 lg:max-w-sm"
         aria-hidden
       />
     </motion.div>

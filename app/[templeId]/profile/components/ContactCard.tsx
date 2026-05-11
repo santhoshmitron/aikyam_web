@@ -26,7 +26,7 @@ export function ContactCard({ profile }: Props) {
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="rounded-[1.75rem] border border-dashed border-purple-300/60 bg-purple-50/50 p-6 text-center text-sm text-purple-800/75 md:p-8"
+        className="rounded-[1.75rem] border border-dashed border-purple-300/60 bg-purple-50/50 p-6 text-center text-sm text-purple-800/75 md:p-8 lg:rounded-[1.85rem] lg:p-7 xl:p-8"
       >
         <SectionTitle icon={Phone} title="Contact" subtitle="Reach the temple" />
         <p className="mt-4">Contact details will be shared here soon.</p>
@@ -41,7 +41,7 @@ export function ContactCard({ profile }: Props) {
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.5 }}
       whileHover={{ y: -2 }}
-      className="rounded-[1.75rem] border border-purple-200/70 bg-white/85 p-6 shadow-[0_16px_48px_-24px_rgba(76,29,149,0.15)] backdrop-blur-xl md:p-8"
+      className="rounded-[1.75rem] border border-purple-200/70 bg-white/85 p-6 shadow-[0_16px_48px_-24px_rgba(76,29,149,0.15)] backdrop-blur-xl transition-shadow hover:shadow-[0_24px_52px_-26px_rgba(76,29,149,0.32)] md:p-8 lg:rounded-[1.85rem] lg:p-7 xl:p-8"
     >
       <SectionTitle icon={Phone} title="Contact" subtitle="Call or write with reverence" />
 
@@ -54,7 +54,7 @@ export function ContactCard({ profile }: Props) {
             {helplines.map((line, idx) => (
               <div
                 key={idx}
-                className="rounded-2xl bg-white/90 px-4 py-3 ring-1 ring-purple-100 shadow-sm"
+                className="rounded-2xl bg-white/90 px-4 py-3 ring-1 ring-purple-100 shadow-sm transition-all hover:-translate-y-0.5 hover:ring-purple-200/80 hover:shadow-md"
               >
                 <p className="text-xs font-semibold text-purple-800">{formatHelplineLabel(line.type)}</p>
                 {line.phone ? (
@@ -85,7 +85,7 @@ export function ContactCard({ profile }: Props) {
         {profile.email ? (
           <a
             href={`mailto:${profile.email}`}
-            className="flex items-center gap-3 rounded-2xl bg-amber-50/90 px-4 py-3 ring-1 ring-amber-200/70 transition hover:bg-amber-100/90 hover:shadow-md"
+            className="flex items-center gap-3 rounded-2xl bg-amber-50/90 px-4 py-3 ring-1 ring-amber-200/70 transition-all hover:-translate-y-0.5 hover:bg-amber-100/90 hover:shadow-md"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-purple-950">
               <Mail className="h-5 w-5" aria-hidden />

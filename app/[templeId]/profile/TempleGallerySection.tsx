@@ -93,7 +93,7 @@ export function TempleGallerySection({
   }, [hasMore, loading, nextPage, pageSize, templeId]);
 
   return (
-    <section className="relative mx-auto w-full max-w-screen-2xl px-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))] pt-4 sm:px-6 sm:pb-16 lg:px-8 xl:pt-6 2xl:px-12">
+    <section className="relative mx-auto w-full max-w-screen-2xl px-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))] pt-5 sm:px-6 sm:pb-16 lg:px-8 lg:pt-7 xl:pt-8 2xl:px-12">
       <div className="mb-2 h-px w-full bg-gradient-to-r from-transparent via-amber-400/60 to-transparent" />
 
       <motion.div
@@ -101,7 +101,7 @@ export function TempleGallerySection({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-40px" }}
         transition={{ duration: 0.45 }}
-        className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+        className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between lg:mb-8"
       >
         <div className="flex items-start gap-3">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-700 to-purple-950 text-amber-300 shadow-lg shadow-purple-900/30">
@@ -126,7 +126,7 @@ export function TempleGallerySection({
           Temple gallery will appear here once sacred photos are published.
         </div>
       ) : (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-[1.05rem] xl:grid-cols-4">
         {items.map((item, index) => {
           const imageUrl = firstVariant(item.media?.variants) || item.media?.url || "";
           const isHero = index === 0;
@@ -142,8 +142,8 @@ export function TempleGallerySection({
               viewport={{ once: true, margin: "-24px" }}
               transition={{ duration: 0.4, delay: Math.min(index * 0.04, 0.4) }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className={`group relative overflow-hidden rounded-3xl bg-white shadow-[0_12px_40px_-18px_rgba(76,29,149,0.25)] ring-1 ring-purple-200/40 ${
-                isHero ? "sm:col-span-2 sm:row-span-2" : ""
+              className={`group relative overflow-hidden rounded-3xl bg-white shadow-[0_12px_40px_-18px_rgba(76,29,149,0.25)] ring-1 ring-purple-200/40 transition-shadow hover:shadow-[0_20px_46px_-24px_rgba(76,29,149,0.45)] ${
+                isHero ? "sm:col-span-2 sm:row-span-2 xl:col-span-1 xl:row-span-1" : ""
               }`}
             >
               <div

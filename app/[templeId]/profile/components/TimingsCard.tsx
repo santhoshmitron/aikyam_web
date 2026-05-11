@@ -26,7 +26,7 @@ export function TimingsCard({ timings }: Props) {
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.5 }}
       whileHover={{ y: -2 }}
-      className="rounded-[1.75rem] border border-purple-200/70 bg-white/85 p-6 shadow-[0_16px_48px_-24px_rgba(76,29,149,0.18)] backdrop-blur-xl md:p-8"
+      className="rounded-[1.75rem] border border-purple-200/70 bg-white/85 p-6 shadow-[0_16px_48px_-24px_rgba(76,29,149,0.18)] backdrop-blur-xl transition-shadow hover:shadow-[0_24px_52px_-26px_rgba(76,29,149,0.32)] md:p-8 lg:rounded-[1.85rem] lg:p-7 xl:p-8"
     >
       <SectionTitle icon={Clock3} title="Darshan timings" subtitle="Plan your blessed visit" />
 
@@ -49,9 +49,9 @@ export function TimingsCard({ timings }: Props) {
       ) : null}
 
       {hasAny ? (
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:gap-3.5">
           {morningStr ? (
-            <div className="group rounded-2xl bg-gradient-to-br from-amber-50 to-white p-4 ring-1 ring-amber-200/60 transition-shadow hover:shadow-md">
+            <div className="group rounded-2xl bg-gradient-to-br from-amber-50 to-white p-4 ring-1 ring-amber-200/60 transition-all hover:-translate-y-0.5 hover:shadow-md">
               <div className="flex items-center gap-2 text-amber-700">
                 <Sun className="h-5 w-5" aria-hidden />
                 <span className="text-sm font-semibold uppercase tracking-wider">Morning</span>
@@ -62,7 +62,7 @@ export function TimingsCard({ timings }: Props) {
             </div>
           ) : null}
           {eveningStr ? (
-            <div className="group rounded-2xl bg-gradient-to-br from-purple-50 to-white p-4 ring-1 ring-purple-200/60 transition-shadow hover:shadow-md">
+            <div className="group rounded-2xl bg-gradient-to-br from-purple-50 to-white p-4 ring-1 ring-purple-200/60 transition-all hover:-translate-y-0.5 hover:shadow-md">
               <div className="flex items-center gap-2 text-purple-700">
                 <Moon className="h-5 w-5" aria-hidden />
                 <span className="text-sm font-semibold uppercase tracking-wider">Evening</span>

@@ -66,14 +66,14 @@ export function ProfileShell({
           mapSearchQuery={mapSearchQuery}
         />
 
-        <main className="mx-auto grid w-full max-w-screen-2xl grid-cols-1 gap-6 px-4 pb-12 pt-2 sm:gap-7 sm:px-6 md:pb-16 lg:grid-cols-12 lg:gap-8 lg:px-8 lg:pt-4 2xl:gap-10 2xl:px-12">
-          <div className="flex flex-col gap-6 sm:gap-7 lg:col-span-8 lg:gap-8">
+        <main className="mx-auto grid w-full max-w-screen-2xl grid-cols-1 gap-6 px-4 pb-12 pt-2 sm:gap-7 sm:px-6 md:pb-16 lg:grid-cols-12 lg:gap-6 lg:px-8 lg:pt-4 xl:gap-7 xl:pt-5 2xl:gap-7 2xl:px-12">
+          <div className="flex flex-col gap-6 sm:gap-7 lg:col-span-8 lg:gap-6 xl:gap-7">
             <HistoryCard historyText={historyText} />
             <EstablishmentCard establishment={profile.establishment} />
             <DeityCard deities={profile.deities} />
             <LocationCard profile={profile} addressLine={addressLine} />
           </div>
-          <aside className="flex flex-col gap-6 sm:gap-7 lg:col-span-4 lg:gap-8">
+          <aside className="flex flex-col gap-6 sm:gap-7 lg:col-span-4 lg:gap-6 xl:gap-7">
             <TimingsCard timings={profile.timings} />
             <ContactCard profile={profile} />
             <CommunityCard profile={profile} />
