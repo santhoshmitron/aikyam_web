@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useState } from "react";
-import { motion } from "framer-motion";
+import { useCallback, useMemo, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Images, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { GalleryEmptyState } from "./components/GalleryEmptyState";
 
 export type GalleryItem = {
   id: string;
@@ -29,6 +31,8 @@ type Props = {
   pageSize: number;
   totalElements: number;
   initialHasNext: boolean;
+  /** Nested inside profile content deck — parent provides width and outer chrome. */
+  embedded?: boolean;
 };
 
 export function TempleGallerySection({
@@ -39,12 +43,19 @@ export function TempleGallerySection({
   pageSize,
   totalElements,
   initialHasNext,
+  embedded = false,
 }: Props) {
   const [items, setItems] = useState<GalleryItem[]>(initialItems);
   const [nextPage, setNextPage] = useState(initialPage + (initialHasNext ? 1 : 0));
   const [hasMore, setHasMore] = useState(initialHasNext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const reduceMotion = useReducedMotion();
+
+  const templeShortName = useMemo(() => {
+    const first = title.trim().split(/\s+/)[0];
+    return first || "this temple";
+  }, [title]);
 
   const loadMore = useCallback(async () => {
     if (!hasMore || loading) return;
@@ -92,89 +103,114 @@ export function TempleGallerySection({
     }
   }, [hasMore, loading, nextPage, pageSize, templeId]);
 
+  const sectionClass = embedded
+    ? "relative border-t border-purple-200/45 bg-gradient-to-b from-white/70 via-[#faf8ff] to-amber-50/35 px-6 py-8 sm:px-8 sm:py-9 lg:px-10 lg:py-10"
+    : "relative mx-auto w-full max-w-screen-2xl px-4 pt-5 sm:px-6 lg:px-8 lg:pt-7 xl:pt-8 2xl:px-12";
+
+  const bottomPad = embedded
+    ? "pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:pb-14 lg:pb-16"
+    : "pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:pb-16";
+
   return (
-    <section className="relative mx-auto w-full max-w-screen-2xl px-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))] pt-5 sm:px-6 sm:pb-16 lg:px-8 lg:pt-7 xl:pt-8 2xl:px-12">
-      <div className="mb-2 h-px w-full bg-gradient-to-r from-transparent via-amber-400/60 to-transparent" />
+    <section
+      aria-labelledby="sacred-glimpses-heading"
+      className={cn(sectionClass, bottomPad)}
+    >
+      <div
+        className={cn(
+          "mb-5 h-px w-full bg-gradient-to-r from-transparent via-amber-400/55 to-transparent sm:mb-6",
+          embedded && "opacity-90"
+        )}
+      />
 
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.45 }}
-        className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between lg:mb-8"
+        viewport={{ once: true, margin: "-36px" }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        className="mb-6 flex flex-col gap-4 sm:mb-7 sm:flex-row sm:items-end sm:justify-between lg:mb-8"
       >
-        <div className="flex items-start gap-3">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-700 to-purple-950 text-amber-300 shadow-lg shadow-purple-900/30">
-            <Images className="h-6 w-6" aria-hidden />
-          </span>
+        <div className="flex items-start gap-3 sm:gap-4">
+          <motion.span
+            whileHover={reduceMotion ? undefined : { scale: 1.04, rotate: -2 }}
+            transition={{ type: "spring", stiffness: 400, damping: 22 }}
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-700 to-purple-950 text-amber-300 shadow-lg shadow-purple-900/35 sm:h-14 sm:w-14"
+          >
+            <Images className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
+          </motion.span>
           <div>
-            <h2 className="font-display text-2xl font-semibold tracking-tight text-purple-950 md:text-3xl">
+            <h2
+              id="sacred-glimpses-heading"
+              className="font-display text-2xl font-semibold tracking-tight text-purple-950 md:text-3xl"
+            >
               Sacred glimpses
             </h2>
-            <p className="mt-1 text-sm text-purple-800/70">
-              Moments of light, architecture, and devotion from {title.split(" ")[0]}…
+            <p className="mt-1 max-w-prose text-sm leading-relaxed text-purple-800/72">
+              Visual moments from {templeShortName} — architecture, light, and devotion.
             </p>
           </div>
         </div>
-        <span className="w-fit rounded-full border border-purple-200/80 bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-purple-800 shadow-sm backdrop-blur-sm">
+        <span className="w-fit rounded-full border border-purple-200/85 bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-purple-800 shadow-sm backdrop-blur-sm">
           {totalElements} photos · {items.length} shown
         </span>
       </motion.div>
 
       {items.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-purple-300/50 bg-white/70 p-8 text-center text-sm text-purple-800/80 backdrop-blur-sm">
-          Temple gallery will appear here once sacred photos are published.
-        </div>
+        <GalleryEmptyState templeShortName={templeShortName} />
       ) : (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-[1.05rem] xl:grid-cols-4">
-        {items.map((item, index) => {
-          const imageUrl = firstVariant(item.media?.variants) || item.media?.url || "";
-          const isHero = index === 0;
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-[1.05rem] xl:grid-cols-4">
+          {items.map((item, index) => {
+            const imageUrl = firstVariant(item.media?.variants) || item.media?.url || "";
+            const isHero = index === 0;
 
-          return (
-            <motion.a
-              key={item.id}
-              href={imageUrl}
-              target="_blank"
-              rel="noreferrer"
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-24px" }}
-              transition={{ duration: 0.4, delay: Math.min(index * 0.04, 0.4) }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className={`group relative overflow-hidden rounded-3xl bg-white shadow-[0_12px_40px_-18px_rgba(76,29,149,0.25)] ring-1 ring-purple-200/40 transition-shadow hover:shadow-[0_20px_46px_-24px_rgba(76,29,149,0.45)] ${
-                isHero ? "sm:col-span-2 sm:row-span-2 xl:col-span-1 xl:row-span-1" : ""
-              }`}
-            >
-              <div
-                className={`relative w-full ${isHero ? "aspect-[4/3] min-h-[200px] sm:min-h-[280px]" : "aspect-square min-h-[160px]"}`}
+            return (
+              <motion.a
+                key={item.id}
+                href={imageUrl}
+                target="_blank"
+                rel="noreferrer"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-20px" }}
+                transition={{ duration: 0.38, delay: Math.min(index * 0.035, 0.35) }}
+                whileHover={reduceMotion ? undefined : { y: -5 }}
+                className={cn(
+                  "group relative overflow-hidden rounded-3xl bg-white shadow-[0_14px_44px_-20px_rgba(76,29,149,0.28)] ring-1 ring-purple-200/45 transition-shadow duration-300 hover:shadow-[0_22px_50px_-26px_rgba(76,29,149,0.48)]",
+                  isHero ? "sm:col-span-2 sm:row-span-2 xl:col-span-1 xl:row-span-1" : ""
+                )}
               >
-                <Image
-                  src={imageUrl}
-                  alt=""
-                  fill
-                  className="object-cover transition duration-700 group-hover:scale-105"
-                  sizes={
-                    isHero
-                      ? "(max-width: 640px) 100vw, (max-width: 1024px) 66vw, 50vw"
-                      : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                }
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-purple-950/70 via-transparent to-amber-400/10 opacity-80 transition group-hover:opacity-95" />
-                <div className="absolute inset-x-0 bottom-0 p-4">
-                  <p className="text-xs font-medium text-white/95 drop-shadow-md">
-                    {item.createdAt
-                      ? new Date(item.createdAt).toLocaleDateString("en-IN", {
-                          dateStyle: "medium",
-                        })
-                      : "Blessed moment"}
-                  </p>
+                <div
+                  className={cn(
+                    "relative w-full",
+                    isHero ? "aspect-[4/3] min-h-[200px] sm:min-h-[280px]" : "aspect-square min-h-[160px]"
+                  )}
+                >
+                  <Image
+                    src={imageUrl}
+                    alt=""
+                    fill
+                    className="object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
+                    sizes={
+                      isHero
+                        ? "(max-width: 640px) 100vw, (max-width: 1024px) 66vw, 50vw"
+                        : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    }
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-purple-950/72 via-transparent to-amber-400/10 opacity-85 transition duration-300 group-hover:opacity-95" />
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <p className="text-xs font-medium text-white/95 drop-shadow-md">
+                      {item.createdAt
+                        ? new Date(item.createdAt).toLocaleDateString("en-IN", {
+                            dateStyle: "medium",
+                          })
+                        : "Blessed moment"}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </motion.a>
-          );
-        })}
-      </div>
+              </motion.a>
+            );
+          })}
+        </div>
       )}
 
       {hasMore ? (
@@ -183,7 +219,7 @@ export function TempleGallerySection({
             <Button
               type="button"
               size="lg"
-              className="min-w-[220px] rounded-full bg-gradient-to-r from-purple-700 via-purple-800 to-purple-950 px-8 text-white shadow-[0_12px_40px_-12px_rgba(76,29,149,0.45)] hover:from-purple-800 hover:to-purple-950"
+              className="min-w-[220px] rounded-full bg-gradient-to-r from-purple-700 via-purple-800 to-purple-950 px-8 text-white shadow-[0_12px_40px_-12px_rgba(76,29,149,0.45)] transition hover:from-purple-800 hover:to-purple-950"
               onClick={() => void loadMore()}
               disabled={loading}
             >

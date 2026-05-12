@@ -214,11 +214,77 @@ export function mapsSearchUrl(query: string): string {
 
 export function mapsDirectionsUrl(query: string): string {
   const dest = encodeURIComponent(query);
-  return `https://www.google.com/maps?q=${dest}`;
+  return `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
 }
 
-export function mapsEmbedUrl(query: string): string {
-  return `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
+/** Parsed WGS84 pair when profile/API supplies numeric latitude & longitude. */
+export function parseCoordinatePair(
+  lat: unknown,
+  lon: unknown
+): { lat: number; lon: number } | null {
+  const la = typeof lat === "string" ? Number.parseFloat(lat) : lat;
+  const lo = typeof lon === "string" ? Number.parseFloat(lon) : lon;
+  if (typeof la !== "number" || typeof lo !== "number") return null;
+  if (!Number.isFinite(la) || !Number.isFinite(lo)) return null;
+  if (la < -90 || la > 90 || lo < -180 || lo > 180) return null;
+  return { lat: la, lon: lo };
+}
+
+export function parseProfileCoordinates(
+  profile: Pick<TempleProfile, "latitude" | "longitude">
+): { lat: number; lon: number } | null {
+  return parseCoordinatePair(profile.latitude, profile.longitude);
+}
+
+export function mapsSearchUrlFromCoordinates(lat: number, lon: number): string {
+  const pair = `${lat},${lon}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pair)}`;
+}
+
+export function mapsDirectionsUrlFromCoordinates(lat: number, lon: number): string {
+  const pair = `${lat},${lon}`;
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(pair)}`;
+}
+
+/**
+ * OpenStreetMap iframe embed (no API key). Optional bounding box from geocoder
+ * in Nominatim order: min_lat, max_lat, min_lon, max_lon.
+ */
+export function openStreetMapEmbedFromCoordinates(
+  lat: number,
+  lon: number,
+  boundingbox?: [number, number, number, number]
+): string {
+  let minLon: number;
+  let minLat: number;
+  let maxLon: number;
+  let maxLat: number;
+  if (boundingbox) {
+    const [minLatBB, maxLatBB, minLonBB, maxLonBB] = boundingbox;
+    minLat = minLatBB;
+    maxLat = maxLatBB;
+    minLon = minLonBB;
+    maxLon = maxLonBB;
+  } else {
+    const delta = 0.012;
+    minLon = lon - delta;
+    maxLon = lon + delta;
+    minLat = lat - delta;
+    maxLat = lat + delta;
+  }
+
+  const params = new URLSearchParams({
+    bbox: `${minLon},${minLat},${maxLon},${maxLat}`,
+    layer: "mapnik",
+    marker: `${lat},${lon}`,
+  });
+  return `https://www.openstreetmap.org/export/embed.html?${params.toString()}`;
+}
+
+/** Role label for pills; omit generic "primary" in UI (redundant). */
+export function shouldShowDeityRole(role?: string): boolean {
+  if (!role?.trim()) return false;
+  return role.trim().toLowerCase() !== "primary";
 }
 
 /** Role label for pills e.g. primary → Primary deity */

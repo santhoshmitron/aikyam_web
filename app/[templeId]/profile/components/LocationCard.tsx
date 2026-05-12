@@ -1,10 +1,18 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ExternalLink, MapPin, Navigation } from "lucide-react";
-import { useState } from "react";
+import { ExternalLink, Loader2, MapPin, Navigation } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { mapsDirectionsUrl, mapsEmbedUrl, mapsSearchUrl, prettifyPlace } from "../utils/format";
+import {
+  mapsDirectionsUrl,
+  mapsDirectionsUrlFromCoordinates,
+  mapsSearchUrl,
+  mapsSearchUrlFromCoordinates,
+  openStreetMapEmbedFromCoordinates,
+  parseProfileCoordinates,
+  prettifyPlace,
+} from "../utils/format";
 import type { TempleProfile } from "../types";
 import { SectionTitle } from "./SectionTitle";
 
@@ -15,18 +23,42 @@ type Props = {
 
 export function LocationCard({ profile, addressLine }: Props) {
   const [showMap, setShowMap] = useState(false);
+  const [osmEmbedUrl, setOsmEmbedUrl] = useState<string | null>(null);
+  const [mapPreviewStatus, setMapPreviewStatus] = useState<"idle" | "loading" | "error">("idle");
+
+  const coords = parseProfileCoordinates(profile);
+  const coordEmbed = coords
+    ? openStreetMapEmbedFromCoordinates(coords.lat, coords.lon)
+    : null;
 
   const placeLabel = prettifyPlace(profile.placeId);
   const query =
     addressLine ||
-    [profile.username, placeLabel].filter(Boolean).join(", ") ||
+    [profile.locationName, profile.username, placeLabel].filter(Boolean).join(", ") ||
     "India";
 
-  const searchUrl = mapsSearchUrl(query);
-  const directionsUrl = mapsDirectionsUrl(query);
-  const embedUrl = mapsEmbedUrl(query);
+  const searchUrl = coords
+    ? mapsSearchUrlFromCoordinates(coords.lat, coords.lon)
+    : mapsSearchUrl(query);
+  const directionsUrl = coords
+    ? mapsDirectionsUrlFromCoordinates(coords.lat, coords.lon)
+    : mapsDirectionsUrl(query);
 
-  const hasLocation = Boolean(addressLine || placeLabel || profile.username);
+  const activeEmbedUrl = coordEmbed ?? osmEmbedUrl;
+
+  useEffect(() => {
+    setOsmEmbedUrl(null);
+    setMapPreviewStatus("idle");
+    setShowMap(false);
+  }, [query, profile.latitude, profile.longitude]);
+
+  const hasLocation = Boolean(
+    addressLine ||
+      placeLabel ||
+      profile.username?.trim() ||
+      profile.locationName?.trim() ||
+      coords
+  );
 
   if (!hasLocation) {
     return (
@@ -36,7 +68,7 @@ export function LocationCard({ profile, addressLine }: Props) {
         viewport={{ once: true }}
         className="rounded-[1.75rem] border border-dashed border-purple-300/60 bg-purple-50/40 p-6 text-center text-sm text-purple-800/75 md:p-8 lg:rounded-[1.85rem] lg:p-7 xl:p-8"
       >
-        <SectionTitle icon={MapPin} title="Location" subtitle="Find your way" />
+        <SectionTitle icon={MapPin} title="Location" />
         <p className="mt-4">Location details will appear here soon.</p>
       </motion.article>
     );
@@ -51,10 +83,14 @@ export function LocationCard({ profile, addressLine }: Props) {
       whileHover={{ y: -2 }}
       className="rounded-[1.75rem] border border-purple-200/70 bg-white/85 p-6 shadow-[0_16px_48px_-24px_rgba(76,29,149,0.15)] backdrop-blur-xl transition-shadow hover:shadow-[0_24px_52px_-26px_rgba(76,29,149,0.32)] md:p-8 lg:rounded-[1.85rem] lg:p-7 xl:p-8"
     >
-      <SectionTitle icon={MapPin} title="Location" subtitle="Sacred geography" />
+      <SectionTitle icon={MapPin} title="Location" />
 
       {addressLine ? (
         <p className="mt-4 text-pretty text-base leading-relaxed text-purple-900/90">{addressLine}</p>
+      ) : profile.locationName?.trim() ? (
+        <p className="mt-4 text-pretty text-base leading-relaxed text-purple-900/90">
+          {profile.locationName.trim()}
+        </p>
       ) : placeLabel ? (
         <p className="mt-4 text-pretty text-base text-purple-900/90">{placeLabel}</p>
       ) : null}
@@ -83,10 +119,50 @@ export function LocationCard({ profile, addressLine }: Props) {
 
       <button
         type="button"
-        onClick={() => setShowMap((s) => !s)}
+        onClick={() => {
+          if (showMap) {
+            setShowMap(false);
+            return;
+          }
+          setShowMap(true);
+          if (coordEmbed) {
+            return;
+          }
+          if (osmEmbedUrl || mapPreviewStatus === "loading") {
+            return;
+          }
+          setMapPreviewStatus("loading");
+          void (async () => {
+            try {
+              const res = await fetch(
+                `/api/map-preview?q=${encodeURIComponent(query)}`
+              );
+              const data: unknown = await res.json();
+              const embed =
+                typeof data === "object" &&
+                data !== null &&
+                "embedUrl" in data &&
+                typeof (data as { embedUrl: unknown }).embedUrl === "string"
+                  ? (data as { embedUrl: string }).embedUrl
+                  : null;
+              if (!res.ok || !embed) {
+                setMapPreviewStatus("error");
+                return;
+              }
+              setOsmEmbedUrl(embed);
+              setMapPreviewStatus("idle");
+            } catch {
+              setMapPreviewStatus("error");
+            }
+          })();
+        }}
         className="mt-4 flex w-full items-center justify-center gap-2 text-sm font-semibold text-purple-700 underline-offset-4 hover:text-purple-900 hover:underline"
       >
-        <ExternalLink className="h-4 w-4" aria-hidden />
+        {mapPreviewStatus === "loading" ? (
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+        ) : (
+          <ExternalLink className="h-4 w-4" aria-hidden />
+        )}
         {showMap ? "Hide map preview" : "Show map preview"}
       </button>
 
@@ -96,13 +172,45 @@ export function LocationCard({ profile, addressLine }: Props) {
           animate={{ opacity: 1, height: "auto" }}
           className="mt-4 overflow-hidden rounded-2xl ring-2 ring-amber-300/40"
         >
-          <iframe
-            title="Temple location map"
-            src={embedUrl}
-            className="h-[240px] w-full md:h-[300px]"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+          {mapPreviewStatus === "loading" && !coordEmbed ? (
+            <div className="flex h-[240px] w-full flex-col items-center justify-center gap-3 bg-purple-50/80 text-purple-800 md:h-[300px]">
+              <Loader2 className="h-8 w-8 animate-spin text-amber-600" aria-hidden />
+              <span className="text-sm font-medium">Loading map…</span>
+            </div>
+          ) : null}
+          {activeEmbedUrl ? (
+            <>
+              <iframe
+                title="Temple location map"
+                src={activeEmbedUrl}
+                className="h-[240px] w-full md:h-[300px]"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+              <p className="border-t border-purple-100/80 bg-white/90 px-3 py-2 text-center text-[11px] text-purple-800/70">
+                Map data ©{" "}
+                <a
+                  href="https://www.openstreetmap.org/copyright"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium text-purple-700 underline-offset-2 hover:underline"
+                >
+                  OpenStreetMap
+                </a>{" "}
+                contributors
+              </p>
+            </>
+          ) : null}
+          {mapPreviewStatus === "error" && !activeEmbedUrl ? (
+            <div className="flex h-[200px] flex-col items-center justify-center gap-3 bg-purple-50/80 px-4 text-center text-sm text-purple-900/85">
+              <p>Map preview is unavailable for this address.</p>
+              <Button asChild className="rounded-full" size="sm">
+                <a href={searchUrl} target="_blank" rel="noreferrer">
+                  Open in Maps instead
+                </a>
+              </Button>
+            </div>
+          ) : null}
         </motion.div>
       ) : null}
     </motion.article>

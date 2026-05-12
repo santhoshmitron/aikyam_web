@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Flower2 } from "lucide-react";
 import type { TempleProfile } from "../types";
-import { prettifyDeity, prettifyRole } from "../utils/format";
+import { prettifyDeity, prettifyRole, shouldShowDeityRole } from "../utils/format";
 import { SectionTitle } from "./SectionTitle";
 
 type Props = {
@@ -11,7 +11,10 @@ type Props = {
 };
 
 export function DeityCard({ deities }: Props) {
-  if (!deities?.length) return null;
+  const withDeityId = deities?.filter((d) => Boolean(d.deityId?.trim())) ?? [];
+  if (withDeityId.length === 0) return null;
+
+  const sectionTitle = withDeityId.length > 1 ? "Deities" : "Presiding deity";
 
   return (
     <motion.article
@@ -22,9 +25,9 @@ export function DeityCard({ deities }: Props) {
       whileHover={{ y: -2 }}
       className="rounded-[1.75rem] border border-purple-300/40 bg-gradient-to-br from-purple-900 via-purple-800 to-[#2d1155] p-6 text-white shadow-[0_20px_60px_-24px_rgba(76,29,149,0.45)] transition-shadow hover:shadow-[0_28px_68px_-30px_rgba(76,29,149,0.6)] md:p-8 lg:rounded-[1.85rem] lg:p-7 xl:p-8"
     >
-      <SectionTitle icon={Flower2} title="Primary deity" subtitle="Divine presence" tone="onDark" />
+      <SectionTitle icon={Flower2} title={sectionTitle} tone="onDark" />
       <div className="mt-4 flex flex-wrap gap-3 lg:gap-2.5">
-        {deities.map((d, idx) => (
+        {withDeityId.map((d, idx) => (
           <motion.span
             key={idx}
             initial={{ opacity: 0, scale: 0.92 }}
@@ -36,7 +39,7 @@ export function DeityCard({ deities }: Props) {
             <span className="font-display text-lg font-semibold tracking-tight">
               {prettifyDeity(d.deityId)}
             </span>
-            {d.role ? (
+            {shouldShowDeityRole(d.role) ? (
               <span className="text-xs font-medium uppercase tracking-wider text-amber-200/90">
                 {prettifyRole(d.role)}
               </span>

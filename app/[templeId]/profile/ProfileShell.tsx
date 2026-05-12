@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { AmbientBackground } from "./components/AmbientBackground";
 import { CommunityCard } from "./components/CommunityCard";
 import { ContactCard } from "./components/ContactCard";
@@ -46,7 +47,10 @@ export function ProfileShell({
 }: Props) {
   const addressLine = formatAddressClean(profile.address, profile.username);
   const mapSearchQuery =
-    addressLine || profile.username || "Sacred temple, India";
+    addressLine ||
+    profile.locationName?.trim() ||
+    profile.username ||
+    "Sacred temple, India";
 
   return (
     <div className="relative min-h-screen overflow-x-hidden pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:pb-0">
@@ -64,31 +68,50 @@ export function ProfileShell({
           followersCount={profile.followersCount ?? 0}
           viewsCount={profile.postsViewCount ?? 0}
           mapSearchQuery={mapSearchQuery}
+          mapLatitude={profile.latitude}
+          mapLongitude={profile.longitude}
         />
 
-        <main className="mx-auto grid w-full max-w-screen-2xl grid-cols-1 gap-6 px-4 pb-12 pt-2 sm:gap-7 sm:px-6 md:pb-16 lg:grid-cols-12 lg:gap-6 lg:px-8 lg:pt-4 xl:gap-7 xl:pt-5 2xl:gap-7 2xl:px-12">
-          <div className="flex flex-col gap-6 sm:gap-7 lg:col-span-8 lg:gap-6 xl:gap-7">
-            <HistoryCard historyText={historyText} />
-            <EstablishmentCard establishment={profile.establishment} />
-            <DeityCard deities={profile.deities} />
-            <LocationCard profile={profile} addressLine={addressLine} />
-          </div>
-          <aside className="flex flex-col gap-6 sm:gap-7 lg:col-span-4 lg:gap-6 xl:gap-7">
-            <TimingsCard timings={profile.timings} />
-            <ContactCard profile={profile} />
-            <CommunityCard profile={profile} />
-          </aside>
-        </main>
+        <div className="mx-auto max-w-screen-2xl px-4 pt-3 sm:px-6 sm:pt-4 lg:px-8 lg:pt-5 xl:px-10 2xl:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden rounded-[2rem] border border-purple-200/55 bg-gradient-to-b from-white/95 via-[#faf7ff] to-purple-50/50 shadow-[0_28px_90px_-40px_rgba(76,29,149,0.32)] ring-1 ring-purple-100/50 backdrop-blur-xl sm:rounded-[2.25rem]"
+          >
+            <main
+              aria-label="Temple story, location, and practical details"
+              className="grid grid-cols-1 gap-8 p-6 sm:gap-9 sm:p-8 lg:grid-cols-12 lg:items-start lg:gap-x-10 lg:gap-y-0 lg:p-10 lg:pb-9"
+            >
+              <div className="flex flex-col gap-7 lg:col-span-8 lg:gap-8">
+                <HistoryCard historyText={historyText} />
+                <EstablishmentCard establishment={profile.establishment} />
+                <DeityCard deities={profile.deities} />
+                <LocationCard profile={profile} addressLine={addressLine} />
+              </div>
+              <aside
+                aria-label="Timings and contact"
+                className="flex flex-col gap-7 lg:col-span-4 lg:gap-8"
+              >
+                <TimingsCard timings={profile.timings} />
+                <ContactCard profile={profile} />
+              </aside>
+            </main>
 
-        <TempleGallerySection
-          templeId={templeId}
-          title={title}
-          initialItems={gallery.items}
-          initialPage={gallery.page}
-          pageSize={gallery.size}
-          totalElements={gallery.totalElements}
-          initialHasNext={gallery.hasNext}
-        />
+            <CommunityCard profile={profile} variant="ribbon" />
+
+            <TempleGallerySection
+              embedded
+              templeId={templeId}
+              title={title}
+              initialItems={gallery.items}
+              initialPage={gallery.page}
+              pageSize={gallery.size}
+              totalElements={gallery.totalElements}
+              initialHasNext={gallery.hasNext}
+            />
+          </motion.div>
+        </div>
       </div>
     </div>
   );

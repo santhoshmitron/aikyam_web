@@ -58,4 +58,8 @@ export type TempleProfile = {
   postsViewCount?: number;
   lastUpdatedAt?: string;
   placeId?: string;
+  /** Human-readable place label from API (preferred over raw placeId in UI). */
+  locationName?: string;
+  latitude?: number;
+  longitude?: number;
 };

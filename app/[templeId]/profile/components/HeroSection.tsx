@@ -15,7 +15,11 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { mapsDirectionsUrl } from "../utils/format";
+import {
+  mapsDirectionsUrl,
+  mapsDirectionsUrlFromCoordinates,
+  parseCoordinatePair,
+} from "../utils/format";
 
 type Props = {
   templeId: string;
@@ -29,6 +33,8 @@ type Props = {
   followersCount: number;
   viewsCount: number;
   mapSearchQuery: string;
+  mapLatitude?: number;
+  mapLongitude?: number;
 };
 
 const container = {
@@ -65,6 +71,8 @@ export function HeroSection({
   followersCount,
   viewsCount,
   mapSearchQuery,
+  mapLatitude,
+  mapLongitude,
 }: Props) {
   const [isSharing, setIsSharing] = useState(false);
   const [showCopiedToast, setShowCopiedToast] = useState(false);
@@ -99,7 +107,10 @@ export function HeroSection({
     }
   }, [isSharing, isSmallScreen, tagline, templeId, title]);
 
-  const directions = mapsDirectionsUrl(mapSearchQuery);
+  const mapCoords = parseCoordinatePair(mapLatitude, mapLongitude);
+  const directions = mapCoords
+    ? mapsDirectionsUrlFromCoordinates(mapCoords.lat, mapCoords.lon)
+    : mapsDirectionsUrl(mapSearchQuery);
 
   return (
     <>
